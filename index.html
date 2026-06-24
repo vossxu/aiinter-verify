@@ -1,223 +1,63 @@
-权查询 | Authorization Verification</title>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IAIC Verification Center</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f5f7fb;
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 700px;
-            width: 100%;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
-            padding: 40px 30px;
-            text-align: center;
-        }
-        .logo {
-            margin-bottom: 20px;
-        }
-        .logo img {
-            height: 50px;
-        }
-        h1 {
-            font-size: 24px;
-            color: #1A3A5C;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: #6b7a8d;
-            margin-bottom: 30px;
-        }
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        input {
-            width: 100%;
-            max-width: 400px;
-            padding: 15px 20px;
-            font-size: 16px;
-            border: 2px solid #e0e5ec;
-            border-radius: 12px;
-            outline: none;
-            transition: border 0.2s;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        input:focus {
-            border-color: #00A3E0;
-        }
-        button {
-            background: #1A3A5C;
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-            margin-top: 10px;
-        }
-        button:hover {
-            background: #0f2a45;
-        }
-        .result-box {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: left;
-            display: none;
-        }
-        .success {
-            background: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            display: block;
-        }
-        .error {
-            background: #ffebee;
-            border: 1px solid #ffcdd2;
-            display: block;
-        }
-        .result-box h3 {
-            margin-top: 0;
-            color: #1A3A5C;
-        }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 14px;
-        }
-        .detail-row:last-child {
-            border-bottom: none;
-        }
-        .label {
-            color: #666;
-            font-weight: 500;
-        }
-        .value {
-            color: #333;
-            font-weight: 600;
-        }
-        .disclaimer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #999;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-        .lang-switch {
-            text-align: right;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-        .lang-switch a {
-            color: #00A3E0;
-            text-decoration: none;
-            cursor: pointer;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #f4f6f9; color: #1a202c; padding: 40px 20px; }
+        .container { max-width: 650px; margin: 0 auto; background: #fff; padding: 35px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .logo-area { text-align: center; margin-bottom: 25px; }
+        .logo-title { font-size: 22px; font-weight: 700; color: #0f172a; }
+        .logo-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
+        .search-box { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        input { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 8px; }
+        button { padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+        .result-card { display: none; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; background: #f8fafc; border-left: 5px solid #10b981; }
+        .result-card.active { display: block; }
+        .result-item { display: flex; margin-bottom: 10px; font-size: 14px; }
+        .result-item strong { width: 140px; color: #475569; }
+        .no-data { display: none; text-align: center; color: #ef4444; background: #fef2f2; padding: 15px; border-radius: 8px; }
+        .no-data.active { display: block; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <!-- 可以替换为您的IAIC logo图片链接 -->
-            <div style="font-size: 28px; font-weight: 700; color: #1A3A5C;">IAIC</div>
-        </div>
-        <h1 id="mainTitle">授权资质查询</h1>
-        <p class="subtitle" id="subTitle">Authorization Verification · 请输入授权编号</p>
-        <div class="input-group">
-            <input type="text" id="authCode" placeholder="例如: IAIC-OPR-CN-2026-001" />
-            <button onclick="verify()">查询 / Verify</button>
-        </div>
-        <div id="result" class="result-box"></div>
-        <div class="disclaimer">
-            <p id="disclaimerText">本查询系统由 IAIC（国际人工智能委员会）提供。中国区查询服务由智裁（北京）人工智能科技有限公司提供技术支持。IAIC 证书为专业培训结业证明，非国家职业资格。</p>
-            <p>This verification system is operated by IAIC, a California corporation. IAIC certificates are professional training credentials and do not constitute government-mandated vocational qualifications.</p>
-        </div>
+<div class="container">
+    <div class="logo-area">
+        <div class="logo-title">IAIC Verification Center</div>
+        <div class="logo-subtitle">国际人工智能委员会 · 凭证查询系统</div>
     </div>
-    <script>
-        // ==================== 授权数据（在此添加新记录） ====================
-        const authorizationData = [
-            {
-                id: "IAIC-OPR-CN-2026-001",
-                type: "OPR",
-                name: "智裁（北京）人工智能科技有限公司",
-                nameEn: "Zhicai (Beijing) Artificial Intelligence Technology Co., Ltd.",
-                status: "active",
-                validUntil: "2027-06-30",
-                role: "中国内地独家运营方 / Exclusive Operator for Mainland China",
-                authorizedBy: "中华商业有限公司 / Sino Commercial Limited"
-            },
-            // 示例：未来授权培训中心记录
-            // {
-            // id: "IAIC-ATC-2026-001",
-            // type: "ATC",
-            // name: "某培训机构",
-            // nameEn: "Some Training Center",
-            // status: "active",
-            // validUntil: "2027-06-30",
-            // course: "IAIC AI Foundation",
-            // authorizedBy: "智裁（北京）人工智能科技有限公司"
-            // }
-        ];
-        function verify() {
-            const code = document.getElementById("authCode").value.trim();
-            const resultDiv = document.getElementById("result");
-            resultDiv.className = "result-box";
-            resultDiv.style.display = "block";
-            if (!code) {
-                resultDiv.classList.add("error");
-                resultDiv.innerHTML = "<p>❌ 请输入授权编号 / Please enter an authorization number.</p>";
-                return;
-            }
-            const record = authorizationData.find(item => item.id === code);
-            if (!record) {
-                resultDiv.classList.add("error");
-                resultDiv.innerHTML = `<p>❌ 未查询到该授权 / Authorization not found</p>
-                    <p>可能原因：编号输入有误；该授权已失效；数据尚未更新。</p>
-                    <p>如有疑问请联系：verify@aiinter.org</p>`;
-                return;
-            }
-            if (record.status === "active") {
-                resultDiv.classList.add("success");
-                let html = "<h3>✅ 有效授权 / Active</h3>";
-                html += `<div class="detail-row"><span class="label">授权编号 ID</span><span class="value">${record.id}</span></div>`;
-                html += `<div class="detail-row"><span class="label">机构名称 Institution</span><span class="value">${record.name}<br><small>${record.nameEn}</small></span></div>`;
-                html += `<div class="detail-row"><span class="label">授权类型 Type</span><span class="value">${record.type === 'OPR' ? '独家运营方 Operator' : '授权培训中心 ATC'}</span></div>`;
-                html += `<div class="detail-row"><span class="label">授权身份 Role</span><span class="value">${record.role || '授权培训中心'}</span></div>`;
-                html += `<div class="detail-row"><span class="label">授权方 Authorized by</span><span class="value">${record.authorizedBy}</span></div>`;
-                if (record.course) {
-                    html += `<div class="detail-row"><span class="label">授权课程 Courses</span><span class="value">${record.course}</span></div>`;
-                }
-                html += `<div class="detail-row"><span class="label">有效期至 Valid Until</span><span class="value">${record.validUntil}</span></div>`;
-                html += `<div class="detail-row"><span class="label">状态 Status</span><span class="value" style="color:#2e7d32;">有效 Active</span></div>`;
-                resultDiv.innerHTML = html;
-            } else {
-                resultDiv.classList.add("error");
-                resultDiv.innerHTML = `<p>⚠️ 该授权已终止 / Authorization Terminated</p>
-                    <p>${record.name} 当前无权使用 IAIC 品牌。</p>`;
-            }
+    <div class="search-box">
+        <input type="text" id="certInput" placeholder="Certificate No. / 证书编号">
+        <input type="text" id="nameInput" placeholder="Name / 姓名或机构">
+        <button onclick="handleSearch()">Verify / 查询</button>
+    </div>
+    <div id="resultCard" class="result-card">
+        <div class="result-item"><strong>ID:</strong><span id="resId"></span></div>
+        <div class="result-item"><strong>Type:</strong><span id="resType"></span></div>
+        <div class="result-item"><strong>Status:</strong><span id="resStatus"></span></div>
+    </div>
+    <div id="noData" class="no-data">Not Found / 未找到记录</div>
+</div>
+<script>
+    // 示例数据库，完整版本请见引用文件
+    const database = [{ id: "CAIE-2026-0081", name: "Voss Xu", type: "Individual", status: "Valid" }];
+    function handleSearch() {
+        const cert = document.getElementById('certInput').value.trim();
+        const name = document.getElementById('nameInput').value.trim();
+        const res = database.find(i => i.id === cert && i.name === name);
+        if (res) {
+            document.getElementById('resId').innerText = res.id;
+            document.getElementById('resType').innerText = res.type;
+            document.getElementById('resStatus').innerText = res.status;
+            document.getElementById('resultCard').classList.add('active');
+            document.getElementById('noData').classList.remove('active');
+        } else {
+            document.getElementById('resultCard').classList.remove('active');
+            document.getElementById('noData').classList.add('active');
         }
-        // 支持回车键查询
-        document.getElementById("authCode").addEventListener("keypress", function(e) {
-            if (e.key === "Enter") {
-                verify();
-            }
-        });
-    </script>
+    }
+</script>
 </body>
 </html>
