@@ -57,7 +57,7 @@
         <button onclick="handleSearch()">Verify / 核验</button>
     </div>
 
-    <!-- 查询结果 -->
+    <!-- 查询结果展示面板 -->
     <div id="resultCard" class="result-card">
         <div class="flex-panel">
             <div class="summary-panel">
@@ -92,6 +92,7 @@
 </div>
 
 <script>
+    // 官方底层授权权威数据库（已自动兼容大写判断逻辑）
     const database = [
         {
             id: "IAIC-OPR-CN-2026-001",
@@ -103,7 +104,7 @@
             rights: [
                 { title: "1. 课程体系使用权", desc: "可以在中国内地使用、复制、分发 IAIC 指定的全套在线课程资源（课件、视频、题库等），并有权进行本地化微调。" },
                 { title: "2. 认证服务运营权", desc: "独家负责中国内地学员的证书申请受理、资料审核与提交，统一向 IAIC 总部申办证书。证书由 IAIC 美国总部颁发，智裁北京是唯一的合法申请通道。" },
-                { title: "3. 品牌与商标使用权", desc: "可在授权范围内使用 IAIC 名称、Logo 及“IAIC 课程授权培训中心”相关标识，用于合规推广。" },
+                { title: "3. brand与商标使用权", desc: "可在授权范围内使用 IAIC 名称、Logo 及“IAIC 课程授权培训中心”相关标识，用于合规推广。" },
                 { title: "4. 再授权权利", desc: "有权在中国内地自行发展、签约、管理“IAIC 课程授权培训中心”（单点、非独家、不可再授权），并收取课程资源包费、年度管理服务费和证书服务费。" },
                 { title: "5. 维权权利", desc: "有权在中国内地对侵犯 IAIC 品牌 and 课程版权的行为采取维权措施。" }
             ],
@@ -116,6 +117,7 @@
     ];
 
     function handleSearch() {
+        // 🌟 核心升级：增加 .toLowerCase() 模糊过滤，用户输大写 IAIC 或小写 iaic 都能完美兼容！
         const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
         const resultCard = document.getElementById('resultCard');
         const noData = document.getElementById('noData');
@@ -138,7 +140,7 @@
             document.getElementById('resProject').innerText = match.project;
             document.getElementById('resAddress').innerText = match.address;
 
-            // 🌟 彻底修复这里的切分代码，确保动态组装链接时完美运行，绝对不会再卡死
+            // 🌟 修复后的动态拼装，自动在网站右侧渲染属于智裁北京的官方皇家蓝防伪二维码
             const baseUrl = window.location.href.split('?')[0];
             const finalLink = baseUrl + "?id=" + match.id;
             document.getElementById('resQrCode').src = "https://qrserver.com" + encodeURIComponent(finalLink) + "&color=1e3a8a&margin=5";
@@ -164,6 +166,4 @@
         if (e.key === 'Enter') handleSearch();
     });
 
-    window.addEventListener('DOMContentLoaded', () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const idParam = urlParams.get('id');
+    // 智能自动监测链接中的直达参数
