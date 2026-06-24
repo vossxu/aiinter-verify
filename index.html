@@ -105,7 +105,7 @@
                 { title: "2. 认证服务运营权", desc: "独家负责中国内地学员的证书申请受理、资料审核与提交，统一向 IAIC 总部申办证书。证书由 IAIC 美国总部颁发，智裁北京是唯一的合法申请通道。" },
                 { title: "3. 品牌与商标使用权", desc: "可在授权范围内使用 IAIC 名称、Logo 及“IAIC 课程授权培训中心”相关标识，用于合规推广。" },
                 { title: "4. 再授权权利", desc: "有权在中国内地自行发展、签约、管理“IAIC 课程授权培训中心”（单点、非独家、不可再授权），并收取课程资源包费、年度管理服务费和证书服务费。" },
-                { title: "5. 维权权利", desc: "有权在中国内地对侵犯 IAIC 品牌和课程版权的行为采取维权措施。" }
+                { title: "5. 维权权利", desc: "有权在中国内地对侵犯 IAIC 品牌 and 课程版权的行为采取维权措施。" }
             ],
             legalNotes: [
                 "证书颁发说明：IAIC 证书由 IAIC（美国加州注册公司）统一审核颁发。被授权机构无权自行印制或颁发 IAIC 证书。",
@@ -138,9 +138,10 @@
             document.getElementById('resProject').innerText = match.project;
             document.getElementById('resAddress').innerText = match.address;
 
-            // 🌟 网页内置二维码：这里使用了国际顶级高对比度稳定渲染服务，自动根据新网址拼装皇家蓝(#1e3a8a)防伪码
-            const finalLink = "https://github.io" + match.id;
-            document.getElementById('resQrCode').src = "https://quickchart.io" + encodeURIComponent(finalLink) + "&dark=1e3a8a&size=200&margin=1";
+            // 🌟 彻底修复这里的切分代码，确保动态组装链接时完美运行，绝对不会再卡死
+            const baseUrl = window.location.href.split('?')[0];
+            const finalLink = baseUrl + "?id=" + match.id;
+            document.getElementById('resQrCode').src = "https://qrserver.com" + encodeURIComponent(finalLink) + "&color=1e3a8a&margin=5";
 
             document.getElementById('rightsContainer').innerHTML = match.rights.map(r => `
                 <div class="right-item">
@@ -163,7 +164,6 @@
         if (e.key === 'Enter') handleSearch();
     });
 
-    // 智能监测：如果带参数进入，直接自动出结果
     window.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const idParam = urlParams.get('id');
