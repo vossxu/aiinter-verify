@@ -61,7 +61,6 @@
 
     <div class="search-box">
         <input type="text" id="searchInput" placeholder="Enter Certificate No. / 输入证书编号或机构名称进行核验...">
-        <!-- 🌟 回归最标准的单纯点击映射，杜绝任何中间函数传空值的可能 -->
         <button id="searchBtn">Verify / 核验</button>
     </div>
 
@@ -124,7 +123,7 @@
         }
     ];
 
-    // 独立、纯粹的检索逻辑，确保绝对不可能出现中间变量未定义而卡死的情况
+    // 核心检索逻辑（已修正二维码生成）
     function executeSearch() {
         const inputField = document.getElementById('searchInput');
         if (!inputField) return;
@@ -138,13 +137,14 @@
             return;
         }
 
-        // 大小写和模糊通杀逻辑
+        // 大小写模糊匹配
         const match = database.find(item => 
             item.id.toLowerCase().includes(keyword) || 
             item.orgName.toLowerCase().includes(keyword)
         );
 
         if (match) {
+            // 填充基本信息
             document.getElementById('resId').innerText = match.id;
             document.getElementById('resStatus').innerText = match.status;
             document.getElementById('resOrg').innerText = match.orgName;
@@ -152,10 +152,16 @@
             document.getElementById('resProject').innerText = match.project;
             document.getElementById('resAddress').innerText = match.address;
 
-            // 完美无错的标准二维码生成链接
-            const finalLink = "https://github.io" + match.id;
-            document.getElementById('resQrCode').src = "https://qrserver.com" + encodeURIComponent(finalLink) + "&color=1e3a8a&margin=5";
+            // ✅ 修正后的二维码生成（使用 qrserver API）
+            const finalLink = "https://github.io/" + match.id;   // 示例验证链接，可按需替换
+            const qrApiBase = "https://api.qrserver.com/v1/create-qr-code/";
+            const qrSrc = qrApiBase 
+                        + "?size=110x110" 
+                        + "&data=" + encodeURIComponent(finalLink)
+                        + "&color=1e3a8a&margin=5";
+            document.getElementById('resQrCode').src = qrSrc;
 
+            // 渲染权益列表
             document.getElementById('rightsContainer').innerHTML = match.rights.map(r => `
                 <div class="right-item">
                     <h4>${r.title}</h4>
@@ -163,8 +169,10 @@
                 </div>
             `).join('');
 
+            // 渲染法务备注
             document.getElementById('legalNotesContainer').innerHTML = match.legalNotes.map(text => `<p>• ${text}</p>`).join('');
 
+            // 显示结果卡片，隐藏“无数据”提示
             resultCard.classList.add('active');
             noData.classList.remove('active');
         } else {
@@ -173,5 +181,9 @@
         }
     }
 
-    // 事件绑定安全处理
+    // 绑定搜索按钮事件
     document.getElementById('searchBtn').addEventListener('click', executeSearch);
+</script>
+
+</body>
+</html>
