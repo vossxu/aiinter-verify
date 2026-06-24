@@ -3,61 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IAIC Verification Center</title>
+    <title>IAIC Verification & Authorization Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background-color: #f4f6f9; color: #1a202c; padding: 40px 20px; }
-        .container { max-width: 650px; margin: 0 auto; background: #fff; padding: 35px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .logo-area { text-align: center; margin-bottom: 25px; }
-        .logo-title { font-size: 22px; font-weight: 700; color: #0f172a; }
-        .logo-subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
-        .search-box { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-        input { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 8px; }
-        button { padding: 14px; background: #2563eb; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-        .result-card { display: none; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; background: #f8fafc; border-left: 5px solid #10b981; }
-        .result-card.active { display: block; }
-        .result-item { display: flex; margin-bottom: 10px; font-size: 14px; }
-        .result-item strong { width: 140px; color: #475569; }
-        .no-data { display: none; text-align: center; color: #ef4444; background: #fef2f2; padding: 15px; border-radius: 8px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f1f5f9; color: #1e293b; padding: 40px 20px; line-height: 1.6; }
+        .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 45px; border-radius: 16px; box-shadow: 0 20px 40px rgba(15,23,42,0.06); border: 1px solid #e2e8f0; }
+        .logo-area { text-align: center; margin-bottom: 35px; border-bottom: 3px double #cbd5e1; padding-bottom: 25px; }
+        .logo-title { font-size: 28px; font-weight: 800; color: #1e3a8a; letter-spacing: 0.5px; }
+        .logo-subtitle { font-size: 15px; color: #475569; margin-top: 6px; font-weight: 600; letter-spacing: 1px; }
+        .search-box { display: flex; gap: 12px; margin-bottom: 35px; }
+        input { flex: 1; padding: 14px 20px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 16px; outline: none; transition: all 0.3s; }
+        input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 4px rgba(30,58,138,0.1); }
+        button { padding: 14px 35px; background: #1e3a8a; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #172554; }
+        
+        .result-card { display: none; background: #ffffff; border-radius: 12px; }
+        .result-card.active { display: block; animation: fadeIn 0.4s ease; }
+        
+        /* 核心摘要看板 */
+        .summary-panel { background: #f8fafc; border: 1px solid #e2e8f0; border-left: 6px solid #059669; padding: 24px; border-radius: 8px; margin-bottom: 30px; }
+        .summary-row { display: flex; margin-bottom: 12px; font-size: 15px; }
+        .summary-row:last-child { margin-bottom: 0; }
+        .summary-row strong { width: 180px; color: #475569; flex-shrink: 0; }
+        .summary-row span { color: #0f172a; font-weight: 500; }
+        .status-badge { display: inline-block; padding: 4px 14px; background: #dcfce7; color: #15803d; font-weight: 700; border-radius: 6px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        /* 权利细则区块 */
+        .section-title { font-size: 16px; font-weight: 700; color: #1e3a8a; margin: 25px 0 12px 0; padding-left: 10px; border-left: 4px solid #1e3a8a; }
+        .rights-grid { display: flex; flex-direction: column; gap: 12px; }
+        .right-item { background: #f8fafc; border: 1px solid #f1f5f9; padding: 16px; border-radius: 8px; }
+        .right-item h4 { font-size: 14px; color: #0f172a; margin-bottom: 6px; font-weight: 700; }
+        .right-item p { font-size: 13px; color: #475569; text-align: justify; }
+        
+        /* 底部法务备注 */
+        .legal-notes { margin-top: 35px; padding-top: 20px; border-top: 1px dashed #e2e8f0; font-size: 12px; color: #64748b; }
+        .legal-notes p { margin-bottom: 6px; }
+        
+        .no-data { display: none; text-align: center; color: #b91c1c; background: #fef2f2; padding: 18px; border-radius: 8px; border: 1px solid #fee2e2; font-weight: 600; font-size: 15px; }
         .no-data.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
 <div class="container">
     <div class="logo-area">
         <div class="logo-title">IAIC Verification Center</div>
-        <div class="logo-subtitle">国际人工智能委员会 · 凭证查询系统</div>
+        <div class="logo-subtitle">国际人工智能委员会 · 独家授权与准入核验中心</div>
     </div>
+
     <div class="search-box">
-        <input type="text" id="certInput" placeholder="Certificate No. / 证书编号">
-        <input type="text" id="nameInput" placeholder="Name / 姓名或机构">
-        <button onclick="handleSearch()">Verify / 查询</button>
+        <input type="text" id="searchInput" placeholder="Enter Certificate No. / 输入证书编号或机构名称进行核验...">
+        <button onclick="handleSearch()">Verify / 核验</button>
     </div>
+
+    <!-- 查询结果 -->
     <div id="resultCard" class="result-card">
-        <div class="result-item"><strong>ID:</strong><span id="resId"></span></div>
-        <div class="result-item"><strong>Type:</strong><span id="resType"></span></div>
-        <div class="result-item"><strong>Status:</strong><span id="resStatus"></span></div>
+        <!-- 核心看板 -->
+        <div class="summary-panel">
+            <div class="summary-row"><strong>Certificate No. / 授权编号</strong><span id="resId" style="font-weight:700; color:#1e3a8a; font-family: monospace; font-size: 16px;"></span></div>
+            <div class="summary-row"><strong>Status / 核验状态</strong><span><g class="status-badge" id="resStatus"></g></span></div>
+            <div class="summary-row"><strong>Authorized Entity / 被授权机构</strong><span id="resOrg" style="font-weight:700;"></span></div>
+            <div class="summary-row"><strong>Validity Period / 权限期限</strong><span id="resPeriod"></span></div>
+            <div class="summary-row"><strong>Scope / 授权项目</strong><span id="resProject" style="color: #b45309; font-weight: 700;"></span></div>
+            <div class="summary-row"><strong>Registered Address / 注册地址</strong><span id="resAddress"></span></div>
+        </div>
+
+        <!-- 独家运营声明 -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; font-size: 14px; color: #166534; font-weight: 600; margin-bottom: 10px;">
+            📢 核心声明：智裁北京是中国内地（不含港澳台）唯一有权运营 IAIC 课程体系、发展并管理“IAIC课程授权培训中心”的实体。
+        </div>
+
+        <!-- 权益拆解 -->
+        <div class="section-title">独家获授权益细则 (Scope of Rights)</div>
+        <div class="rights-grid" id="rightsContainer"></div>
+
+        <!-- 中法文及国际通用法务备注 -->
+        <div class="section-title">法务备忘与规范提示 (Notes)</div>
+        <div class="legal-notes" id="legalNotesContainer"></div>
     </div>
-    <div id="noData" class="no-data">Not Found / 未找到记录</div>
+
+    <!-- 未找到提示 -->
+    <div id="noData" class="no-data">
+        ⚠️ No records found matching the criteria. / 未找到匹配的官方独家授权档案。
+    </div>
 </div>
+
 <script>
-    // 示例数据库，完整版本请见引用文件
-    const database = [{ id: "CAIE-2026-0081", name: "Voss Xu", type: "Individual", status: "Valid" }];
+    // 官方授权权威数据库
+    const database = [
+        {
+            id: "IAIC-OPR-CN-2026-001",
+            status: "valid",
+            orgName: "智裁（北京）人工智能科技有限公司",
+            period: "2026.06.23 - 2029.06.23",
+            project: "中国内地独家运营权 (Exclusive Master Operation Rights)",
+            address: "No.63 Middle Street, Choujiadian Village, Beixiaoying Town, Shunyi District, Beijing City, China",
+            rights: [
+                { title: "1. 课程体系使用权", desc: "可以在中国内地使用、复制、分发 IAIC 指定的全套在线课程资源（课件、视频、题库等），并有权进行本地化微调。" },
+                { title: "2. 认证服务运营权", desc: "独家负责中国内地学员的证书申请受理、资料审核与提交，统一向 IAIC 总部申办证书。证书由 IAIC 美国总部颁发，智裁北京是唯一的合法申请通道。" },
+                { title: "3. 品牌与商标使用权", desc: "可在授权范围内使用 IAIC 名称、Logo 及“IAIC 课程授权培训中心”相关标识，用于合规推广。" },
+                { title: "4. 再授权权利", desc: "有权在中国内地自行发展、签约、管理“IAIC 课程授权培训中心”（单点、非独家、不可再授权），并收取课程资源包费、年度管理服务费和证书服务费。" },
+                { title: "5. 维权权利", desc: "有权在中国内地对侵犯 IAIC 品牌和课程版权的行为采取维权措施。" }
+            ],
+            legalNotes: [
+                "证书颁发说明：IAIC 证书由 IAIC（美国加州注册公司）统一审核颁发。被授权机构无权自行印制或颁发 IAIC 证书。",
+                "证书性质界定：IAIC 证书为专业培训结业证明，证明持证人完成了规定的培训课程，并非国家职业资格、执业资格或从业许可。",
+                "独立主体声明：被授权机构为独立经营主体，其培训活动的质量、收费、售后及相关法律责任，由该机构自行承担。",
+                "防伪核验建议：建议合作商及学员报名前通过本系统核验授权有效性。授权期满或提前撤销后，此查询状态将即时更新。",
+                "Operational Liability Note: The authorized institution is an independent operating entity. It bears sole responsibility for the quality, fees, and legal liability arising from its own activities."
+            ]
+        }
+    ];
+
     function handleSearch() {
-        const cert = document.getElementById('certInput').value.trim();
-        const name = document.getElementById('nameInput').value.trim();
-        const res = database.find(i => i.id === cert && i.name === name);
-        if (res) {
-            document.getElementById('resId').innerText = res.id;
-            document.getElementById('resType').innerText = res.type;
-            document.getElementById('resStatus').innerText = res.status;
-            document.getElementById('resultCard').classList.add('active');
-            document.getElementById('noData').classList.remove('active');
+        const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+        const resultCard = document.getElementById('resultCard');
+        const noData = document.getElementById('noData');
+
+        if (!keyword) {
+            alert('Please enter a query keyword! / 请输入证书编号或机构名称！');
+            return;
+        }
+
+        // 支持通过授权编号或公司名进行查询
+        const match = database.find(item => 
+            item.id.toLowerCase().includes(keyword) || 
+            item.orgName.toLowerCase().includes(keyword)
+        );
+
+        if (match) {
+            document.getElementById('resId').innerText = match.id;
+            document.getElementById('resStatus').innerText = match.status;
+            document.getElementById('resOrg').innerText = match.orgName;
+            document.getElementById('resPeriod').innerText = match.period;
+            document.getElementById('resProject').innerText = match.project;
+            document.getElementById('resAddress').innerText = match.address;
+
+            // 动态生成权利细则列表
+            document.getElementById('rightsContainer').innerHTML = match.rights.map(r => `
+                <div class="right-item">
+                    <h4>${r.title}</h4>
+                    <p>${r.desc}</p>
+                </div>
+            `).join('');
+
+            // 动态生成法务备注
+            document.getElementById('legalNotesContainer').innerHTML = match.legalNotes.map(text => `
+                <p>• ${text}</p>
+            `).join('');
+
+            resultCard.classList.add('active');
+            noData.classList.remove('active');
         } else {
-            document.getElementById('resultCard').classList.remove('active');
-            document.getElementById('noData').classList.add('active');
+            resultCard.classList.remove('active');
+            noData.classList.add('active');
         }
     }
+
+    // 回车键快捷查询
+    document.getElementById('searchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleSearch();
+    });
 </script>
+
 </body>
 </html>
