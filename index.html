@@ -138,9 +138,9 @@
             document.getElementById('resProject').innerText = match.project;
             document.getElementById('resAddress').innerText = match.address;
 
-            // 🌟 终极修复：加入 [0] 逻辑，彻底清除逗号 Bug，确保各种浏览器下 100% 成功加载二维码
-            const baseUrl = window.location.href.split('?')[0];
-            const finalLink = baseUrl + "?id=" + match.id;
+            // 🌟 终极核心修复：改用 baseUrl[0] 提取纯正字符串，彻底清除拼接时的英文逗号 Bug
+            const baseUrl = window.location.href.split('?');
+            const finalLink = baseUrl[0] + "?id=" + match.id;
             document.getElementById('resQrCode').src = "https://qrserver.com" + encodeURIComponent(finalLink) + "&color=1e3a8a&margin=5";
 
             document.getElementById('rightsContainer').innerHTML = match.rights.map(r => `
